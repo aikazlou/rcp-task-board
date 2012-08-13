@@ -1,11 +1,17 @@
 package org.exadel.task.board.controller;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.exadel.task.board.dao.GenericDao;
 import org.exadel.task.board.dao.GenericDaoHibernate;
 import org.exadel.task.board.model.Card;
 import org.exadel.task.board.model.CardList;
 import org.exadel.task.board.model.Comment;
 import org.exadel.task.board.model.User;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 
 public class TaskService {
 
@@ -17,6 +23,17 @@ public class TaskService {
 			Comment.class);
 
 	public TaskService() {
+	}
+	
+	public List<CardList> getLists() {
+		beginTransaction();
+		
+		Criteria criteria = listDao.getSession().createCriteria(CardList.class);
+		final List<CardList> lists = (List<CardList>) criteria.list();
+		
+		closeSession();
+		
+		return lists;
 	}
 
 	public int createUser(User user) {
@@ -70,8 +87,6 @@ public class TaskService {
 		beginTransaction();
 
 		CardList list = listDao.read(id);
-
-		// CardList res = (CardList)listDao.getSession().merge(list);
 
 		closeSession();
 		return list;

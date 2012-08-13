@@ -11,11 +11,4 @@ public class ExitHandler {
 		workbench.close();
 	}
 
-	// Technically not needed
-	// will default to true
-	@CanExecute
-	public boolean canExecute() {
-		return true;
-	}
-
 }

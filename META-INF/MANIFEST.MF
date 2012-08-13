@@ -18,3 +18,19 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.8.0",
  org.eclipse.jface.databinding;bundle-version="1.6.0"
 Import-Package: org.eclipse.e4.core.services.events
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: .,
+ lib/antlr-2.7.7.jar,
+ lib/derby.jar,
+ lib/derbyclient.jar,
+ lib/derbynet.jar,
+ lib/derbytools.jar,
+ lib/dom4j-1.6.1.jar,
+ lib/hibernate-commons-annotations-4.0.1.Final.jar,
+ lib/hibernate-core-4.1.5.Final.jar,
+ lib/hibernate-jpa-2.0-api-1.0.1.Final.jar,
+ lib/javassist-3.15.0-GA.jar,
+ lib/jboss-logging-3.1.0.GA.jar,
+ lib/jboss-transaction-api_1.1_spec-1.0.0.Final.jar,
+ lib/jta-1.1.jar,
+ lib/slf4j-api-1.6.6.jar,
+ lib/slf4j-simple-1.6.6.jar

@@ -10,11 +10,4 @@ public class RemoveBoardHandler {
 		System.out.println("Called");
 	}
 
-	// Technically not needed
-	// will default to true
-	@CanExecute
-	public boolean canExecute() {
-		return true;
-	}
-
 }

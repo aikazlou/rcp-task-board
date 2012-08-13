@@ -10,11 +10,4 @@ public class SaveAllHandler {
 		System.out.println("Save All handler called");
 	}
 
-	// Technically not needed
-	// will default to true
-	@CanExecute
-	public boolean canExecute() {
-		return true;
-	}
-
 }
