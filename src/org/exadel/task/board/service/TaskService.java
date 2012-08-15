@@ -1,17 +1,10 @@
-package org.exadel.task.board.controller;
+package org.exadel.task.board.service;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.exadel.task.board.dao.GenericDao;
-import org.exadel.task.board.dao.GenericDaoHibernate;
-import org.exadel.task.board.model.Card;
-import org.exadel.task.board.model.CardList;
-import org.exadel.task.board.model.Comment;
-import org.exadel.task.board.model.User;
+import org.exadel.task.board.dao.*;
+import org.exadel.task.board.model.*;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 
 public class TaskService {
 
@@ -29,6 +22,7 @@ public class TaskService {
 		beginTransaction();
 		
 		Criteria criteria = listDao.getSession().createCriteria(CardList.class);
+		@SuppressWarnings("unchecked")
 		final List<CardList> lists = (List<CardList>) criteria.list();
 		
 		closeSession();
@@ -73,6 +67,22 @@ public class TaskService {
 		closeSession();
 		return user;
 	}
+	
+	public boolean updateUser(User user) {
+		beginTransaction();
+		
+		if (userDao.read(user.getId()) != null) {
+
+			final User mergedUser = (User) cardDao.getSession().merge(user);
+			userDao.update(mergedUser);
+			
+			commit();
+			return true;
+		}
+		
+		closeSession();
+		return false;
+	}
 
 	public int createList(CardList list) {
 		beginTransaction();
@@ -90,6 +100,22 @@ public class TaskService {
 
 		closeSession();
 		return list;
+	}
+	
+	public boolean updateList(CardList list) {
+		beginTransaction();
+		
+		if (listDao.read(list.getId()) != null) {
+
+			final CardList mergedList = (CardList) listDao.getSession().merge(list);
+			listDao.update(mergedList);
+			
+			commit();
+			return true;
+		}
+
+		closeSession();
+		return false;
 	}
 
 	public int createCard(Card card) {
@@ -110,6 +136,22 @@ public class TaskService {
 		return card;
 	}
 
+	public boolean updateCard(Card card) {
+		beginTransaction();
+		
+		if (cardDao.read(card.getId()) != null) {
+			
+			final Card mergedCard = (Card) cardDao.getSession().merge(card);
+			cardDao.update(mergedCard);
+			
+			commit();
+			return true;
+		}
+
+		closeSession();
+		return false;
+	}
+	
 	public int createComment(Comment comment) {
 		beginTransaction();
 
@@ -138,9 +180,11 @@ public class TaskService {
 				toList);
 
 		if (!mergedFromList.contains(mergedCard)) {
+			closeSession();
 			return false;
 		}
 		if (mergedToList.contains(mergedCard)) {
+			closeSession();
 			return true;
 		}
 

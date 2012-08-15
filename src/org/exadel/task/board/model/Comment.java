@@ -47,6 +47,10 @@ public class Comment {
 	public int getId() {
 		return id;
 	}
+	
+	public User getUser() {
+		return user;
+	}
 
 	public String getContent() {
 		return content;

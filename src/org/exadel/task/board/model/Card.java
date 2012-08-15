@@ -3,7 +3,6 @@ package org.exadel.task.board.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -14,10 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.*;
 
 @Entity
 @Table(name = "CARDS")
@@ -45,9 +41,10 @@ public class Card {
 	@Column(name = "CONTENT")
 	private String content;
 
-	@OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE })
+	@OneToMany(orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.REMOVE,
+			CascadeType.MERGE })
 	@JoinColumn(name = "CARD_ID", nullable = false)
 	private final List<Comment> comments = new LinkedList<Comment>();
 
@@ -83,6 +80,10 @@ public class Card {
 
 	public int getId() {
 		return id;
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	public String getTitle() {

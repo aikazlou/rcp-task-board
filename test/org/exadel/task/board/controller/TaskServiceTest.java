@@ -8,6 +8,7 @@ import org.exadel.task.board.model.Card;
 import org.exadel.task.board.model.CardList;
 import org.exadel.task.board.model.Comment;
 import org.exadel.task.board.model.User;
+import org.exadel.task.board.service.TaskService;
 import org.junit.Test;
 
 public class TaskServiceTest {
