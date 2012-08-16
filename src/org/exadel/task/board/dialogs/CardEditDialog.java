@@ -1,5 +1,7 @@
 package org.exadel.task.board.dialogs;
 
+import java.util.LinkedList;
+
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -11,7 +13,11 @@ import org.exadel.task.board.model.*;
 
 public class CardEditDialog extends TitleAreaDialog {
 
+	private final GridData compositeData = new GridData(
+			GridData.HORIZONTAL_ALIGN_FILL);
+
 	private final Card card;
+	private final java.util.List<Comment> comments;
 
 	private Text title;
 	private Text type;
@@ -20,6 +26,9 @@ public class CardEditDialog extends TitleAreaDialog {
 	public CardEditDialog(Shell parentShell, Card card) {
 		super(parentShell);
 		this.card = card;
+		comments = new LinkedList<>(card.getComments());
+		
+		compositeData.grabExcessHorizontalSpace = true;
 	}
 
 	@Override
@@ -79,11 +88,7 @@ public class CardEditDialog extends TitleAreaDialog {
 		groupData.grabExcessHorizontalSpace = true;
 		groupData.horizontalSpan = 3;
 
-		final GridData compositeData = new GridData(
-				GridData.HORIZONTAL_ALIGN_FILL);
-		compositeData.grabExcessHorizontalSpace = true;
-
-		final Group group = new Group(parent, SWT.NONE);
+		final Group group = new Group(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		group.setText("Comments");
 
 		final GridLayout groupLayout = new GridLayout();
@@ -91,9 +96,9 @@ public class CardEditDialog extends TitleAreaDialog {
 		group.setLayout(groupLayout);
 
 		for (Comment comment : card.getComments()) {
-			createDeleteComment(group, comment).setLayoutData(compositeData);
+			createDeleteComment(group, comment);
 		}
-		createAddComment(group).setLayoutData(compositeData);
+		createAddComment(group);
 
 		group.setLayoutData(groupData);
 	}
@@ -104,6 +109,7 @@ public class CardEditDialog extends TitleAreaDialog {
 				SWT.NONE, comment);
 		composite.setEditable(false);
 		createDeleteButton(composite);
+		composite.setLayoutData(compositeData);
 		return composite;
 	}
 	
@@ -112,6 +118,7 @@ public class CardEditDialog extends TitleAreaDialog {
 		final CommentComposite composite = new CommentComposite(parent,
 				SWT.NONE, new Comment(card.getUser(), ""));
 		createAddButton(composite);
+		composite.setLayoutData(compositeData);
 		return composite;
 	}
 
@@ -123,8 +130,11 @@ public class CardEditDialog extends TitleAreaDialog {
 			
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				card.removeComment(parent.getComment());
+				comments.remove(parent.getComment());
+				
+				final Composite composite = parent.getParent();				
 				parent.dispose();
+				composite.layout();
 			}
 			
 		});
@@ -139,11 +149,14 @@ public class CardEditDialog extends TitleAreaDialog {
 			
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				card.addComment(parent.getComment());
-				parent.dispose();
-				
+				comments.add(parent.getComment());
+
 				createDeleteComment(parent.getParent(), parent.getComment());
 				createAddComment(parent.getParent());
+				
+				final Composite composite = parent.getParent();				
+				parent.dispose();
+				composite.layout();								
 			}
 			
 		});
@@ -163,18 +176,10 @@ public class CardEditDialog extends TitleAreaDialog {
 		gridData.horizontalAlignment = SWT.CENTER;
 
 		parent.setLayoutData(gridData);
-
+		
 		createOkButton(parent, OK, "Ok", true);
-
-		Button cancelButton = createButton(parent, CANCEL, "Cancel", false);
-
-		cancelButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				setReturnCode(CANCEL);
-				close();
-			}
-		});
+		
+		createButton(parent, CANCEL, "Cancel", false);		
 	}
 
 	protected Button createOkButton(Composite parent, int id, String label,
@@ -185,8 +190,10 @@ public class CardEditDialog extends TitleAreaDialog {
 		button.setFont(JFaceResources.getDialogFont());
 		button.setData(new Integer(id));
 		button.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				if (isValidInput()) {
+					saveInput();
 					okPressed();
 				}
 			}
@@ -203,14 +210,7 @@ public class CardEditDialog extends TitleAreaDialog {
 
 	private boolean isValidInput() {
 		boolean valid = true;
-		if (title.getText().length() == 0) {
-			setErrorMessage("Please maintain the title");
-			valid = false;
-		}
-		if (type.getText().length() == 0) {
-			setErrorMessage("Please maintain the type");
-			valid = false;
-		}
+		
 		return valid;
 	}
 
@@ -223,12 +223,7 @@ public class CardEditDialog extends TitleAreaDialog {
 		card.setTitle(title.getText());
 		card.setType(type.getText());
 		card.setContent(content.getText());
-	}
-
-	@Override
-	protected void okPressed() {
-		saveInput();
-		super.okPressed();
+		card.setComments(comments);
 	}
 
 	public Card getCard() {

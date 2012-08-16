@@ -9,6 +9,7 @@ import org.exadel.task.board.model.CardList;
 import org.exadel.task.board.model.Comment;
 import org.exadel.task.board.model.User;
 import org.exadel.task.board.service.TaskService;
+import org.exadel.task.board.service.exceptions.ServiceException;
 import org.junit.Test;
 
 public class TaskServiceTest {
@@ -52,7 +53,7 @@ public class TaskServiceTest {
 	}
 
 	@Test
-	public void moveCardTest() {
+	public void moveCardTest() throws ServiceException {
 
 		final User user = taskService.createUser("ThirdLogin", "Ivanov");
 		final Card card = new Card(user, "First", "Task", "abc");
@@ -79,6 +80,19 @@ public class TaskServiceTest {
 
 		assertFalse(list1.contains(card));
 		assertTrue(list2.contains(card));
+	}
+	
+	@Test
+	public void getUserTest() {
+		
+		final User user1 = taskService.createUser("login", "name");
+		final User user2 = taskService.getUser(user1.getId());
+		final User user3 = taskService.getUser(user1.getLogin());
+		
+		assertEquals(user1, user2);
+		assertEquals(user1, user3);
+		
+		taskService.deleteUser(user1);
 	}
 
 }

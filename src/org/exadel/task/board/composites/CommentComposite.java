@@ -21,7 +21,7 @@ public class CommentComposite extends Composite {
 
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
-		this.setLayout(layout);
+		this.setLayout(layout);		
 		
 		createArea();
 	}
@@ -36,10 +36,11 @@ public class CommentComposite extends Composite {
 		label.setText(comment.getUser().getName());
 
 		content = new Text(this, SWT.WRAP | SWT.BORDER
-				| SWT.H_SCROLL);
+				| SWT.H_SCROLL | SWT.V_SCROLL);
 		content.setBackground(new Color(null, 255, 255, 255));
 		content.setText(comment.getContent());
-
+		
+		gridData.heightHint = content.computeSize(SWT.DEFAULT, SWT.MIN).y / 2;
 		content.setLayoutData(gridData);		
 		
 	}

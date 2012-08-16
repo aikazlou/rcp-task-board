@@ -17,8 +17,9 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_Jui6AOGyEeGpZJHTNLOBIA" elementId="task.board.menuitem.exit" label="Exit" command="_yC2ysOGvEeGpZJHTNLOBIA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_pH2UoOGxEeGpZJHTNLOBIA" elementId="task.board.menu.edit" label="Edit">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_O0GekOGyEeGpZJHTNLOBIA" elementId="task.board.menuitem.new" label="New Board" command="_2PRv0OGvEeGpZJHTNLOBIA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_UNEuYOGyEeGpZJHTNLOBIA" elementId="task.board.menuitem.remove" label="Remove Board" command="_6OSjEOGvEeGpZJHTNLOBIA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_O0GekOGyEeGpZJHTNLOBIA" elementId="task.board.menuitem.newboard" label="New Board" command="_2PRv0OGvEeGpZJHTNLOBIA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_UNEuYOGyEeGpZJHTNLOBIA" elementId="task.board.menuitem.removeboard" label="Remove Board" command="_6OSjEOGvEeGpZJHTNLOBIA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_eAzwcOfgEeGYjfabQLrFhg" elementId="task.board.handledmenuitem.newlist" label="New List" command="_qQO6sOfgEeGYjfabQLrFhg"/>
       </children>
     </mainMenu>
     <trimBars xmi:id="_VFMzwOGzEeGpZJHTNLOBIA" elementId="task.board.trimbar.0">
@@ -29,12 +30,14 @@
   </children>
   <handlers xmi:id="_Bmo0MOGxEeGpZJHTNLOBIA" elementId="task.board.handler.save" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.SaveAllHandler" command="_uCTHUOGvEeGpZJHTNLOBIA"/>
   <handlers xmi:id="_JcR6wOGxEeGpZJHTNLOBIA" elementId="task.board.handler.exit" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.ExitHandler" command="_yC2ysOGvEeGpZJHTNLOBIA"/>
-  <handlers xmi:id="_NrdQ8OGxEeGpZJHTNLOBIA" elementId="task.board.handler.new" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.NewBoardHandler" command="_2PRv0OGvEeGpZJHTNLOBIA"/>
-  <handlers xmi:id="_R1j54OGxEeGpZJHTNLOBIA" elementId="task.board.handler.remove" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.RemoveBoardHandler" command="_6OSjEOGvEeGpZJHTNLOBIA"/>
+  <handlers xmi:id="_NrdQ8OGxEeGpZJHTNLOBIA" elementId="task.board.handler.newboard" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.NewBoardHandler" command="_2PRv0OGvEeGpZJHTNLOBIA"/>
+  <handlers xmi:id="_R1j54OGxEeGpZJHTNLOBIA" elementId="task.board.handler.removeboard" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.RemoveBoardHandler" command="_6OSjEOGvEeGpZJHTNLOBIA"/>
+  <handlers xmi:id="_3Dpi0OfgEeGYjfabQLrFhg" elementId="task.board.handler.newlist" contributionURI="bundleclass://task.board/org.exadel.task.board.handlers.NewListHandler" command="_qQO6sOfgEeGYjfabQLrFhg"/>
   <commands xmi:id="_uCTHUOGvEeGpZJHTNLOBIA" elementId="org.eclipse.ui.file.saveAll" commandName="Save"/>
   <commands xmi:id="_yC2ysOGvEeGpZJHTNLOBIA" elementId="org.eclipse.ui.file.exit" commandName="Exit"/>
-  <commands xmi:id="_2PRv0OGvEeGpZJHTNLOBIA" elementId="task.board.new" commandName="New Board"/>
-  <commands xmi:id="_6OSjEOGvEeGpZJHTNLOBIA" elementId="task.board.remove" commandName="Remove Board"/>
+  <commands xmi:id="_2PRv0OGvEeGpZJHTNLOBIA" elementId="task.board.newboard" commandName="New Board"/>
+  <commands xmi:id="_6OSjEOGvEeGpZJHTNLOBIA" elementId="task.board.removeboard" commandName="Remove Board"/>
+  <commands xmi:id="_qQO6sOfgEeGYjfabQLrFhg" elementId="task.board.command.newlist" commandName="New List"/>
   <addons xmi:id="_4TN7YeDcEeGlHJ3EgNhIOA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_4TN7YuDcEeGlHJ3EgNhIOA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_4TN7Y-DcEeGlHJ3EgNhIOA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

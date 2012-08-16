@@ -40,7 +40,7 @@ public class CardList {
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.REMOVE,
 			CascadeType.MERGE })
 	@JoinColumn(name = "LIST_ID", nullable = false)
-	private final List<Card> cards = new LinkedList<Card>();
+	private List<Card> cards = new LinkedList<Card>();
 
 	CardList() {
 		// default constructor for ORM
@@ -88,8 +88,12 @@ public class CardList {
 		this.title = title;
 	}
 
+	public void setCards(List<Card> cards) {
+		this.cards = cards;
+	}
+	
 	public List<Card> getCards() {
-		return new LinkedList<Card>(cards);
+		return cards;
 	}
 
 	@Override

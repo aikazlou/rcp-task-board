@@ -21,17 +21,13 @@ public class MainPart {
 
 		final List<CardList> lists = service.getLists();
 
-		final FillLayout layout = new FillLayout(SWT.HORIZONTAL);
+		final RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		parent.setLayout(layout);
 
 		for (CardList list : lists) {
-			final GridData gridData = new GridData(
-					GridData.VERTICAL_ALIGN_BEGINNING);
 
-			final CardListComposite cardListView = new CardListComposite(parent,
-					SWT.NONE, list);
-			cardListView.setLayoutData(gridData);
+			new CardListComposite(parent, SWT.BORDER, list);
 		}
 	}
-		
+
 }

@@ -46,7 +46,7 @@ public class Card {
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.REMOVE,
 			CascadeType.MERGE })
 	@JoinColumn(name = "CARD_ID", nullable = false)
-	private final List<Comment> comments = new LinkedList<Comment>();
+	private List<Comment> comments = new LinkedList<Comment>();
 
 	Card() {
 		// default constructor for ORM
@@ -73,9 +73,13 @@ public class Card {
 	public boolean removeComment(Comment comment) {
 		return comments.remove(comment);
 	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
 
 	public List<Comment> getComments() {
-		return new LinkedList<Comment>(comments);
+		return comments;
 	}
 
 	public int getId() {

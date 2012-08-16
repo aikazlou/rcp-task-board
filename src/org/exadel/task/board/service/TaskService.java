@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.exadel.task.board.dao.*;
 import org.exadel.task.board.model.*;
+import org.exadel.task.board.service.exceptions.ServiceException;
 import org.hibernate.Criteria;
 
 public class TaskService {
@@ -17,16 +18,16 @@ public class TaskService {
 
 	public TaskService() {
 	}
-	
+
 	public List<CardList> getLists() {
 		beginTransaction();
-		
+
 		Criteria criteria = listDao.getSession().createCriteria(CardList.class);
 		@SuppressWarnings("unchecked")
 		final List<CardList> lists = (List<CardList>) criteria.list();
-		
+
 		closeSession();
-		
+
 		return lists;
 	}
 
@@ -67,21 +68,21 @@ public class TaskService {
 		closeSession();
 		return user;
 	}
-	
-	public boolean updateUser(User user) {
+
+	public User updateUser(User user) throws ServiceException {
 		beginTransaction();
-		
+
 		if (userDao.read(user.getId()) != null) {
 
 			final User mergedUser = (User) cardDao.getSession().merge(user);
 			userDao.update(mergedUser);
-			
+
 			commit();
-			return true;
+			return mergedUser;
 		}
-		
+
 		closeSession();
-		return false;
+		throw new ServiceException();
 	}
 
 	public int createList(CardList list) {
@@ -101,21 +102,22 @@ public class TaskService {
 		closeSession();
 		return list;
 	}
-	
-	public boolean updateList(CardList list) {
+
+	public CardList updateList(CardList list) throws ServiceException {
 		beginTransaction();
-		
+
 		if (listDao.read(list.getId()) != null) {
 
-			final CardList mergedList = (CardList) listDao.getSession().merge(list);
+			final CardList mergedList = (CardList) listDao.getSession().merge(
+					list);
 			listDao.update(mergedList);
-			
+
 			commit();
-			return true;
+			return mergedList;
 		}
 
 		closeSession();
-		return false;
+		throw new ServiceException();
 	}
 
 	public int createCard(Card card) {
@@ -136,22 +138,22 @@ public class TaskService {
 		return card;
 	}
 
-	public boolean updateCard(Card card) {
+	public Card updateCard(Card card) throws ServiceException {
 		beginTransaction();
-		
+
 		if (cardDao.read(card.getId()) != null) {
-			
+
 			final Card mergedCard = (Card) cardDao.getSession().merge(card);
 			cardDao.update(mergedCard);
-			
+
 			commit();
-			return true;
+			return mergedCard;
 		}
 
 		closeSession();
-		return false;
+		throw new ServiceException();
 	}
-	
+
 	public int createComment(Comment comment) {
 		beginTransaction();
 
@@ -170,7 +172,8 @@ public class TaskService {
 		return comment;
 	}
 
-	public boolean moveCard(Card card, CardList fromList, CardList toList) {
+	public Card moveCard(Card card, CardList fromList, CardList toList)
+			throws ServiceException {
 		beginTransaction();
 
 		final Card mergedCard = (Card) userDao.getSession().merge(card);
@@ -181,19 +184,19 @@ public class TaskService {
 
 		if (!mergedFromList.contains(mergedCard)) {
 			closeSession();
-			return false;
-		}
-		if (mergedToList.contains(mergedCard)) {
-			closeSession();
-			return true;
+			throw new ServiceException();
 		}
 
-		mergedFromList.removeCard(mergedCard);
+		if (mergedToList.contains(mergedCard)) {
+			closeSession();
+			return mergedCard;
+		}
+
 		mergedToList.addCard(mergedCard);
 
 		commit();
 
-		return true;
+		return mergedCard;
 	}
 
 	public void deleteUser(User user) {

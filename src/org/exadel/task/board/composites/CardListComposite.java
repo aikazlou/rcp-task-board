@@ -1,23 +1,25 @@
 package org.exadel.task.board.composites;
 
-import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.exadel.task.board.dialogs.CardEditDialog;
 import org.exadel.task.board.model.*;
 import org.exadel.task.board.service.TaskService;
+import org.exadel.task.board.service.exceptions.ServiceException;
 
 public class CardListComposite extends Composite {
 
 	private final TaskService service = new TaskService();
 
-	private final CardList list;
+	private CardList list;
 
 	private ListViewer viewer;
 
@@ -45,6 +47,94 @@ public class CardListComposite extends Composite {
 		label.setText(list.getTitle());
 
 		createViewer();
+
+		final Button addCard = new Button(this, SWT.PUSH);
+		addCard.setText("Add Card");
+
+		final Button deleteCard = new Button(this, SWT.PUSH);
+		deleteCard.setText("Delete Card");
+		deleteCard.setToolTipText("Delete Selected Card");
+
+		final Button deleteList = new Button(this, SWT.PUSH);
+		deleteList.setText("Delete List");
+
+		addSelectListener(this, addCard);
+		addDeleteCardListener(this, deleteCard);
+		addDeleteListListener(this, deleteList);
+	}
+
+	private void addDeleteListListener(final Composite parent, Button b) {
+		b.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				service.deleteList(list);
+				final Composite grand = parent.getParent();
+				parent.dispose();
+				grand.layout();
+			}
+
+		});
+	}
+
+	private void addDeleteCardListener(final Composite parent, Button b) {
+		b.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				final StructuredSelection selection = (StructuredSelection) viewer
+						.getSelection();
+				if (!selection.isEmpty()) {
+					final Card card = (Card) selection.getFirstElement();
+					list.removeCard(card);
+					try {
+						list = service.updateList(list);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					viewer.remove(card);
+					resizeViewer(viewer);
+				}
+			}
+
+		});
+	}
+
+	private void addSelectListener(final Composite parent, Button b) {
+
+		b.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				Card card = new Card(list.getUser(), "Title", "Type", "Content");
+
+				final CardEditDialog dialog = new CardEditDialog(parent
+						.getShell(), card);
+				dialog.create();
+				if (dialog.open() == Window.OK) {
+
+					list.addCard(card);
+
+					try {
+						list = service.updateList(list);
+
+					} catch (ServiceException e1) {
+						e1.printStackTrace();
+						list.removeCard(card);
+					}
+
+					int index = list.getCards().indexOf(card);
+					card = list.getCards().get(index);
+					viewer.add(card);
+					resizeViewer(viewer);
+				}
+
+			}
+
+		});
+
 	}
 
 	private void createViewer() {
@@ -59,9 +149,6 @@ public class CardListComposite extends Composite {
 					return super.getText(element);
 			}
 		});
-		viewer.setContentProvider(new ObservableListContentProvider() {
-
-		});
 
 		viewer.add(list.getCards().toArray());
 
@@ -74,9 +161,8 @@ public class CardListComposite extends Composite {
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
-				final Card card = (Card) ((StructuredSelection) event
-						.getSelection()).getFirstElement();
+				Card card = (Card) ((StructuredSelection) event.getSelection())
+						.getFirstElement();
 
 				final Control control = viewer.getControl();
 
@@ -85,9 +171,11 @@ public class CardListComposite extends Composite {
 				dialog.create();
 				if (dialog.open() == Window.OK) {
 
-					if (service.updateCard(card)) {
+					try {
+						card = service.updateCard(card);
 						viewer.update(card, null);
-					} else {
+					} catch (ServiceException e) {
+						e.printStackTrace();
 
 						final String message = card
 								+ " has been deleted in other session";
@@ -98,7 +186,7 @@ public class CardListComposite extends Composite {
 
 					control.setSize(control.computeSize(SWT.DEFAULT,
 							SWT.DEFAULT));
-					control.getParent().layout(true, true);
+					control.getParent().layout();
 				}
 			}
 		});
@@ -126,21 +214,21 @@ public class CardListComposite extends Composite {
 
 			@Override
 			public void drop(DropTargetEvent event) {
-				
+
 				final Card card = (Card) ((StructuredSelection) fromViewer
 						.getSelection()).getFirstElement();
-				
 				final CardList fromList = service.getList(fromListId);
 				final CardList toList = service.getList(list.getId());
-				
-				if (service.moveCard(card, fromList, toList)) {
+
+				try {
+					service.moveCard(card, fromList, toList);
 					fromViewer.remove(card);
 					resizeViewer(fromViewer);
-
 					viewer.add(card);
 					resizeViewer(viewer);
-
-					viewer.getControl().getParent().layout(true, true);
+					viewer.getControl().getParent().getParent().layout();
+				} catch (ServiceException e) {
+					e.printStackTrace();
 				}
 			}
 
@@ -157,8 +245,8 @@ public class CardListComposite extends Composite {
 	private void resizeViewer(final ListViewer viewer) {
 
 		final Control control = viewer.getControl();
-
 		control.setSize(control.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		control.getParent().layout();
 
 	}
 

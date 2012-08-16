@@ -20,10 +20,6 @@ public class User {
 	@Column(name = "LOGIN")
 	private String login;
 
-	@NaturalId
-	@Column(name = "TIME_STAMP")
-	private long timestamp;
-
 	@Column(name = "NAME")
 	private String name;
 
@@ -33,13 +29,11 @@ public class User {
 
 	public User(String login) {
 		this.login = login;
-		timestamp = System.nanoTime();
 	}
 
 	public User(String login, String name) {
 		this.login = login;
 		this.name = name;
-		timestamp = System.nanoTime();
 	}
 
 	public int getId() {
@@ -68,7 +62,6 @@ public class User {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
-		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
 		return result;
 	}
 
@@ -85,8 +78,6 @@ public class User {
 			if (other.login != null)
 				return false;
 		} else if (!login.equals(other.login))
-			return false;
-		if (timestamp != other.timestamp)
 			return false;
 		return true;
 	}
